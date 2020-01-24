@@ -40,8 +40,8 @@ class SparsePendulumEnv(gym.Env):
         u = np.clip(u, -self.max_torque, self.max_torque)[0]
         self.last_u = u # for rendering
         a_n_th = angle_normalize(th)
-        reach_cost = a_n_th**2 if abs(a_n_th)< np.pi/6.0 else 10
-        costs = reach_cost + .001*(u**2)
+        reach_cost = 10.0 if abs(a_n_th)< np.pi/12.0 and abs(thdot)<1.0 else 0.0
+        costs = reach_cost + .1*(u**2)
 
         newthdot = thdot + (-3*g/(2*l) * np.sin(th + np.pi) + 3./(m*l**2)*u) * dt
         newth = th + newthdot*dt
