@@ -30,3 +30,9 @@ register(
     entry_point='gym_sparse_envs.envs:SparsePendulumEnv',
     max_episode_steps=200,
 )
+
+register(
+    id='SparseSwimmer-v2',
+    entry_point='gym_sparse_envs.envs:SparseSwimmerEnv',
+    max_episode_steps=1000,
+)

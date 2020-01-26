@@ -11,7 +11,7 @@ class SparseHopperEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         posbefore = self.sim.data.qpos[0]
         self.do_simulation(a, self.frame_skip)
         posafter, height, ang = self.sim.data.qpos[0:3]
-        alive_bonus = 1.0
+        alive_bonus = 0.0
         if posafter - self.init_qpos[0] > 5:
             reward = 1
         else:
