@@ -4,9 +4,10 @@ from gym.envs.mujoco import mujoco_env
 
 class SparseHalfCheetahEnv(mujoco_env.MujocoEnv, utils.EzPickle):
     def __init__(self):
+        self.control_penalty = 1.0
         mujoco_env.MujocoEnv.__init__(self, 'half_cheetah.xml', 5)
         utils.EzPickle.__init__(self)
-        self.control_penalty = 1.0
+        
 
     def set_control_coef(self,coef):
         self.control_penalty = coef
@@ -16,7 +17,7 @@ class SparseHalfCheetahEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         self.do_simulation(action, self.frame_skip)
         xposafter = self.sim.data.qpos[0]
         ob = self._get_obs()
-        reward_ctrl = - 0.1 *control_penalty* np.square(action).sum()
+        reward_ctrl = - 0.1 *self.control_penalty* np.square(action).sum()
         if xposafter - self.init_qpos[0] > 5:
             reward_run = 1
         else:

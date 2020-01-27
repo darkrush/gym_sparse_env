@@ -4,9 +4,11 @@ from gym.envs.mujoco import mujoco_env
 
 class SparseSwimmerEnv(mujoco_env.MujocoEnv, utils.EzPickle):
     def __init__(self):
+        self.control_penalty = 1.0
         mujoco_env.MujocoEnv.__init__(self, 'swimmer.xml', 4)
         utils.EzPickle.__init__(self)
-        self.control_penalty = 1.0
+        
+
     def set_control_coef(self,coef):
         self.control_penalty = coef
     def step(self, a):
