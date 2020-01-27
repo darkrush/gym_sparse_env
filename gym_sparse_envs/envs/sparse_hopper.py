@@ -6,6 +6,10 @@ class SparseHopperEnv(mujoco_env.MujocoEnv, utils.EzPickle):
     def __init__(self):
         mujoco_env.MujocoEnv.__init__(self, 'hopper.xml', 4)
         utils.EzPickle.__init__(self)
+        self.control_penalty = 1.0
+
+    def set_control_coef(self,coef):
+        self.control_penalty = coef
 
     def step(self, a):
         posbefore = self.sim.data.qpos[0]
@@ -18,7 +22,7 @@ class SparseHopperEnv(mujoco_env.MujocoEnv, utils.EzPickle):
             reward = 0
         #reward = (posafter - posbefore) / self.dt
         reward += alive_bonus
-        reward -= 1e-3 * np.square(a).sum()
+        reward -= 1e-3 *self.control_penalty* np.square(a).sum()
         s = self.state_vector()
         done = not (np.isfinite(s).all() and (np.abs(s[2:]) < 100).all() and
                     (height > .7) and (abs(ang) < .2))

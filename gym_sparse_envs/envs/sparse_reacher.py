@@ -6,7 +6,9 @@ class SparseReacherEnv(mujoco_env.MujocoEnv, utils.EzPickle):
     def __init__(self):
         utils.EzPickle.__init__(self)
         mujoco_env.MujocoEnv.__init__(self, 'reacher.xml', 2)
-
+        self.control_penalty = 1.0
+    def set_control_coef(self,coef):
+        self.control_penalty = coef
     def step(self, a):
         vec = self.get_body_com("fingertip")-self.get_body_com("target")
         if np.linalg.norm(vec) < 0.01:
@@ -14,7 +16,7 @@ class SparseReacherEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         else:
             reward_dist  = 0.0            
         #reward_dist = - np.linalg.norm(vec)
-        reward_ctrl = - 0.1*np.square(a).sum()
+        reward_ctrl = - 0.1*self.control_penalty*np.square(a).sum()
         reward = reward_dist + reward_ctrl
         self.do_simulation(a, self.frame_skip)
         ob = self._get_obs()

@@ -50,6 +50,10 @@ class SparseContinuous_MountainCarEnv(gym.Env):
 
         self.seed()
         self.reset()
+        self.control_penalty = 1.0
+
+    def set_control_coef(self,coef):
+        self.control_penalty = coef        
 
     def seed(self, seed=None):
         self.np_random, seed = seeding.np_random(seed)
@@ -74,7 +78,7 @@ class SparseContinuous_MountainCarEnv(gym.Env):
         reward = 0
         if done:
             reward = 100.0
-        #reward-= math.pow(action[0],2)*0.1
+        reward-= math.pow(action[0],2)*0.1*self.control_penalty
 
         self.state = np.array([position, velocity])
         return self.state, reward, done, {}

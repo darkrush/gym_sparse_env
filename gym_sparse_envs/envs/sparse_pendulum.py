@@ -24,6 +24,10 @@ class SparsePendulumEnv(gym.Env):
         self.observation_space = spaces.Box(low=-high, high=high, dtype=np.float32)
 
         self.seed()
+        self.control_penalty = 1.0
+
+    def set_control_coef(self,coef):
+        self.control_penalty = coef
 
     def seed(self, seed=None):
         self.np_random, seed = seeding.np_random(seed)
@@ -40,15 +44,15 @@ class SparsePendulumEnv(gym.Env):
         u = np.clip(u, -self.max_torque, self.max_torque)[0]
         self.last_u = u # for rendering
         a_n_th = angle_normalize(th)
-        reach_cost = -10.0 if abs(a_n_th)< np.pi/48.0 and abs(thdot)<0.1 else 0.0
-        costs = reach_cost + .1*(u**2)
+        reach_reward = 10.0 if abs(a_n_th)< np.pi/48.0 and abs(thdot)<0.01 else 0.0
+        reward = reach_reward + .1*self.control_penalty*(u**2)
 
         newthdot = thdot + (-3*g/(2*l) * np.sin(th + np.pi) + 3./(m*l**2)*u) * dt
         newth = th + newthdot*dt
         newthdot = np.clip(newthdot, -self.max_speed, self.max_speed) #pylint: disable=E1111
 
         self.state = np.array([newth, newthdot])
-        return self._get_obs(), -costs, False, {}
+        return self._get_obs(), reward, False, {}
 
     def reset(self):
         high = np.array([np.pi, 1])
