@@ -18,7 +18,7 @@ class SparseHalfCheetahEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         xposafter = self.sim.data.qpos[0]
         ob = self._get_obs()
         reward_ctrl = - 0.1 *self.control_penalty* np.square(action).sum()
-        if xposafter - self.init_qpos[0] > 5:
+        if xposafter - self.init_qpos[0] > 5.0:
             reward_run = 1
         else:
             reward_run = 0

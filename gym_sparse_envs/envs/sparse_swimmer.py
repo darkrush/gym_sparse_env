@@ -12,11 +12,11 @@ class SparseSwimmerEnv(mujoco_env.MujocoEnv, utils.EzPickle):
     def set_control_coef(self,coef):
         self.control_penalty = coef
     def step(self, a):
-        ctrl_cost_coeff = 0.01*self.control_penalty
+        ctrl_cost_coeff = 0.1*self.control_penalty
         xposbefore = self.sim.data.qpos[0]
         self.do_simulation(a, self.frame_skip)
         xposafter = self.sim.data.qpos[0]
-        if xposafter - self.init_qpos[0] > 2:
+        if xposafter - self.init_qpos[0] > 1.0:
             reward_run = 1
         else:
             reward_run = 0
